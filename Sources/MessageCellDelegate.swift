@@ -24,6 +24,11 @@
 
 import Foundation
 
+public enum MessageCellMenuOption: String {
+    case copy = "copy:"
+    case delete = "delete:"
+}
+
 public protocol MessageCellDelegate: class {
 
     func didTapMessage(in cell: MessageCollectionViewCell)
@@ -33,7 +38,10 @@ public protocol MessageCellDelegate: class {
     func didTapBottomLabel(in cell: MessageCollectionViewCell)
 
     func didTapTopLabel(in cell: MessageCollectionViewCell)
-
+    
+    func menuOptions(in Cell: MessageCollectionViewCell) -> [MessageCellMenuOption]
+    
+    func deleteAction(in Cell: MessageCollectionViewCell)
 }
 
 extension MessageCellDelegate {
@@ -45,5 +53,8 @@ extension MessageCellDelegate {
     func didTapBottomLabel(in cell: MessageCollectionViewCell) {}
 
     func didTapTopLabel(in cell: MessageCollectionViewCell) {}
-
+    
+    func menuOptions(in Cell: MessageCollectionViewCell) -> [MessageCellMenuOption] { return [] }
+    
+    func deleteAction(in Cell: MessageCollectionViewCell) {}
 }
