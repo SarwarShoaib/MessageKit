@@ -241,6 +241,26 @@ extension MessagesViewController: UICollectionViewDataSource {
 
 }
 
+// MARK: - UICollectionViewDelegate Conformance
+extension MessagesViewController: UICollectionViewDelegate {
+    
+    public func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
+        
+    }
+    public func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
+
+        return true
+    }
+    
+    open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        return true
+    }
+}
+
 // MARK: - Keyboard Handling
 
 extension MessagesViewController {
