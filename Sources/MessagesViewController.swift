@@ -61,6 +61,7 @@ open class MessagesViewController: UIViewController {
         registerReusableFooters()
 
 		setupDelegates()
+		addKeyboardObservers()
         
         // https://stackoverflow.com/questions/31049651/uitextview-as-inputaccessoryview-doesnt-render-text-until-after-animation
         // Calling this on the root view avoids a side effect where the inputAccessoryView dissapears after tap
@@ -74,7 +75,7 @@ open class MessagesViewController: UIViewController {
 
     open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        addKeyboardObservers()
+
     }
 
     // MARK: - Initializers
