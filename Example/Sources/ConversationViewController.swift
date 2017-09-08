@@ -183,6 +183,16 @@ extension ConversationViewController: MessagesLayoutDelegate {
 // MARK: - MessageCellDelegate
 
 extension ConversationViewController: MessageCellDelegate {
+    
+    func deleteAction(in Cell: MessageCollectionViewCell) {
+        
+    }
+
+    
+    func menuOptions(in Cell: MessageCollectionViewCell) -> [MessageCellMenuOption] {
+        return [.copy, .delete]
+    }
+
 
     func didTapAvatar(in cell: MessageCollectionViewCell) {
         print("Avatar tapped")
