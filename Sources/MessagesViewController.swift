@@ -256,9 +256,6 @@ extension MessagesViewController: UICollectionViewDelegate {
         return true
     }
     
-    open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-        return true
-    }
 }
 
 // MARK: - Keyboard Handling
