@@ -194,7 +194,7 @@ open class MessageLabel: UILabel, UIGestureRecognizerDelegate {
     // MARK: UIGestureRecognizer Delegate
 
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
+        return false
     }
 
     //swiftlint:disable cyclomatic_complexity
@@ -406,10 +406,10 @@ open class MessageLabel: UILabel, UIGestureRecognizerDelegate {
         addGestureRecognizer(tapGesture)
         tapGesture.delegate = self
 
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleGesture(_:)))
-        addGestureRecognizer(longPressGesture)
-        tapGesture.delegate = self
-
+//        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleGesture(_:)))
+//        addGestureRecognizer(longPressGesture)
+//        tapGesture.delegate = self
+//
         isUserInteractionEnabled = true
     }
 
