@@ -24,150 +24,52 @@
 
 import UIKit
 
-open class MessageCollectionViewCell: UICollectionViewCell {
+open class MessagesCollectionView: UICollectionView {
 
     // MARK: - Properties
 
-    open var messageContainerView: UIView = {
-        let messageContainerView = UIView()
-        messageContainerView.layer.cornerRadius = 12.0
-        messageContainerView.layer.masksToBounds = true
-        return messageContainerView
-    }()
+    open weak var messagesDataSource: MessagesDataSource?
 
-    open var avatarView: AvatarView = AvatarView()
+    open weak var messagesLayoutDelegate: MessagesLayoutDelegate?
 
-    open var cellTopLabel: MessageLabel = {
-        let topLabel = MessageLabel()
-        topLabel.enabledDetectors = []
-        return topLabel
-    }()
+    open weak var messageCellDelegate: MessageCellDelegate?
 
-    open var messageLabel: MessageLabel = MessageLabel()
+    open weak var messageLabelDelegate: MessageLabelDelegate?
 
-    open var cellBottomLabel: MessageLabel = {
-        let bottomLabel = MessageLabel()
-        bottomLabel.enabledDetectors = []
-        return bottomLabel
-    }()
+    private var indexPathForLastItem: IndexPath? {
 
-    open weak var delegate: MessageCellDelegate?
+        let lastSection = numberOfSections > 0 ? numberOfSections - 1 : 0
+        guard lastSection > 0, numberOfItems(inSection: lastSection) > 0 else { return nil }
+        return IndexPath(item: numberOfItems(inSection: lastSection) - 1, section: lastSection)
 
-    // MARK: - Initializer
-
-    override public init(frame: CGRect) {
-        super.init(frame: frame)
-        setupSubviews()
-        setupGestureRecognizers()
-        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
 
+    // MARK: - Initializers
+
+    override public init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
+        super.init(frame: frame, collectionViewLayout: layout)
+        backgroundColor = .white
+    }
+    
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - Methods
 
-    private func setupSubviews() {
-
-        contentView.addSubview(cellTopLabel)
-        contentView.addSubview(messageContainerView)
-        messageContainerView.addSubview(messageLabel)
-        contentView.addSubview(avatarView)
-        contentView.addSubview(cellBottomLabel)
-
+    public func scrollToBottom(animated: Bool = false) {
+        guard let indexPath = indexPathForLastItem else { return }
+        scrollToItem(at: indexPath, at: .bottom, animated: animated)
     }
 
-    override open func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
-        super.apply(layoutAttributes)
-
-        guard let attributes = layoutAttributes as? MessagesCollectionViewLayoutAttributes else { return }
-
-        avatarView.frame = attributes.avatarFrame
-
-        messageContainerView.frame = attributes.messageContainerFrame
-        messageLabel.frame = CGRect(origin: .zero, size: attributes.messageContainerFrame.size)
-        messageLabel.textInsets = attributes.messageLabelInsets
-
-        cellTopLabel.frame = attributes.cellTopLabelFrame
-        cellTopLabel.textInsets = attributes.cellTopLabelInsets
-
-        cellBottomLabel.frame = attributes.cellBottomLabelFrame
-        cellBottomLabel.textInsets = attributes.cellBottomLabelInsets
-
-        cellTopLabel.textAlignment = attributes.direction == .incoming ? .left : .right
-        cellBottomLabel.textAlignment = attributes.direction == .incoming ? .right : .left
-
+    open func dequeueMessageHeaderView(withReuseIdentifier identifier: String = "MessageHeader", for indexPath: IndexPath) -> MessageHeaderView {
+        let header = dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: identifier, for: indexPath)
+        return header as? MessageHeaderView ?? MessageHeaderView()
     }
 
-    public func configure(with message: MessageType) {
-
-        switch message.data {
-        case .text(let text):
-            messageLabel.text = text
-        case .attributedText(let text):
-            messageLabel.attributedText = text
-        }
-
-    }
-
-    private func setupGestureRecognizers() {
-
-        let avatarTapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapAvatar))
-        avatarView.addGestureRecognizer(avatarTapGesture)
-        avatarView.isUserInteractionEnabled = true
-
-        let messageTapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapMessage))
-        messageContainerView.addGestureRecognizer(messageTapGesture)
-        messageTapGesture.delegate = messageLabel
-
-        let topLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapTopLabel))
-        cellTopLabel.addGestureRecognizer(topLabelTapGesture)
-        cellTopLabel.isUserInteractionEnabled = true
-
-        let bottomlabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapBottomLabel))
-        cellBottomLabel.addGestureRecognizer(bottomlabelTapGesture)
-        cellBottomLabel.isUserInteractionEnabled = true
-
-    }
-    
-    open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-        
-        let description = action.description
-        if let options = delegate?.menuOptions(in: self) {
-            for option in options {
-                if (option.rawValue == description) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-    
-    override open func copy(_ sender: Any?) {
-        UIPasteboard.general.string = messageLabel.text
-    }
-    
-    open override func delete(_ sender: Any?) {
-        delegate?.deleteAction(in: self)
-    }
-    
-    // MARK: - Delegate Methods
-
-    func didTapAvatar() {
-        delegate?.didTapAvatar(in: self)
-    }
-
-    func didTapMessage() {
-        delegate?.didTapMessage(in: self)
-    }
-    
-    func didTapTopLabel() {
-        delegate?.didTapTopLabel(in: self)
-    }
-
-    func didTapBottomLabel() {
-        delegate?.didTapBottomLabel(in: self)
+    open func dequeueMessageFooterView(withReuseIdentifier identifier: String = "MessageFooter", for indexPath: IndexPath) -> MessageFooterView {
+        let footer = dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionFooter, withReuseIdentifier: identifier, for: indexPath)
+        return footer as? MessageFooterView ?? MessageFooterView()
     }
 
 }
