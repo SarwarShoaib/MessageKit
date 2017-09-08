@@ -52,7 +52,8 @@ open class MessagesViewController: UIViewController {
 		automaticallyAdjustsScrollViewInsets = false
         view.backgroundColor = .white
         messagesCollectionView.keyboardDismissMode = .interactive
-
+        messagesCollectionView.alwaysBounceVertical = true
+        
 		setupSubviews()
 		setupConstraints()
 
