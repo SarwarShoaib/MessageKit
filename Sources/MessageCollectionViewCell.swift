@@ -130,7 +130,28 @@ open class MessageCollectionViewCell: UICollectionViewCell {
         cellBottomLabel.isUserInteractionEnabled = true
 
     }
-
+    
+    open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        
+        let description = action.description
+        if let options = delegate?.menuOptions(in: self) {
+            for option in options {
+                if (option.rawValue == description) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    override open func copy(_ sender: Any?) {
+        UIPasteboard.general.string = messageLabel.text
+    }
+    
+    open override func delete(_ sender: Any?) {
+        delegate?.deleteAction(in: self)
+    }
+    
     // MARK: - Delegate Methods
 
     func didTapAvatar() {
@@ -140,7 +161,7 @@ open class MessageCollectionViewCell: UICollectionViewCell {
     func didTapMessage() {
         delegate?.didTapMessage(in: self)
     }
-
+    
     func didTapTopLabel() {
         delegate?.didTapTopLabel(in: self)
     }
@@ -148,4 +169,5 @@ open class MessageCollectionViewCell: UICollectionViewCell {
     func didTapBottomLabel() {
         delegate?.didTapBottomLabel(in: self)
     }
+
 }
