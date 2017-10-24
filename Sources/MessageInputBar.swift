@@ -439,6 +439,7 @@ open class MessageInputBar: UIView {
     }
     
     open func textViewDidEndEditing() {
+        inputTextView.selectedTextRange = inputTextView.textRange(from: inputTextView.beginningOfDocument, to: inputTextView.endOfDocument)
         self.items.forEach { $0.keyboardEditingEndsAction() }
     }
     
